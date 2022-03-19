@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+unset LANG LC_COLLATE LC_CTYPE LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME LC_ALL
+export LANG=C
+export TZ=UTC
+
+mkdir -p ~/logs
+touch ~/logs/tx-updater.log
+
+{
+    date
+
+    cd ~/source/repos/vbam-tx-pulls
+    git pull --rebase
+    tx pull -af
+    git add -f po/wxvbam/*.po
+
+    if ! git status | grep -q '^nothing to commit, working tree clean$'; then
+        git commit -a --signoff -S -m'translations: transifex pull'
+        git push
+    else
+        echo 'No changes from transifex.'
+    fi
+} >> ~/logs/tx-updater.log 2>&1
