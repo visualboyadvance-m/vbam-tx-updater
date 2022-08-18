@@ -14,6 +14,24 @@ touch ~/logs/tx-updater.log
 
     cd ~/source/repos/vbam-tx-pulls
     git pull --rebase
+
+    rm -rf build
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
+    ninja gettext-pot
+    cd ..
+
+    if ! git status | grep -q '^nothing to commit, working tree clean$'; then
+        get commit -a --signoff -S -m'translations: rebuild source .pot'
+        git push
+    else
+        echo 'Source .pot is up-to-date.'
+    fi
+
+    # Always push the source .pot.
+    tx push -s
+
     tx pull -af
     git add -f po/wxvbam/*.po
 
