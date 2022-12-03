@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 unset LANG LC_COLLATE LC_CTYPE LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME LC_ALL
 export LANG=C
 export TZ=UTC
@@ -9,7 +7,11 @@ export TZ=UTC
 mkdir -p ~/logs
 touch ~/logs/tx-updater.log
 
-{
+rm -f ~/logs/tx-updater-stamp
+
+(
+    set -e
+
     date
 
     cd ~/source/repos/vbam-tx-pulls
@@ -41,4 +43,12 @@ touch ~/logs/tx-updater.log
     else
         echo 'No changes from transifex.'
     fi
-} >> ~/logs/tx-updater.log 2>&1
+
+    touch ~/logs/tx-updater-stamp
+) >> ~/logs/tx-updater.log 2>&1
+
+if ! [ -f ~/logs/tx-updater-stamp ]; then
+    echo 'Job failed, see ~/logs/tx-updater.log' | mail -s 'vbam transifex job failed' rkitover@gmail.com
+fi
+
+rm -f ~/logs/tx-updater-stamp
