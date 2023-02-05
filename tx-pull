@@ -25,7 +25,7 @@ rm -f ~/logs/tx-updater-stamp
     cd ..
 
     if ! git status | grep -q '^nothing to commit, working tree clean$'; then
-        get commit -a --signoff -S -m'translations: rebuild source .pot'
+        git commit -a --signoff -S -m'translations: rebuild source .pot'
         git push
     else
         echo 'Source .pot is up-to-date.'
