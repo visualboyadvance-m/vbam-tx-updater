@@ -21,7 +21,7 @@ rm -f ~/logs/tx-updater-stamp
     mkdir build
     cd build
     cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
-    ninja gettext-pot
+    ninja vbam-wx-pot
     cd ..
 
     if ! git status | grep -q '^nothing to commit, working tree clean$'; then
